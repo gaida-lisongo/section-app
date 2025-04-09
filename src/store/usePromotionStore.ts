@@ -130,10 +130,12 @@ export const usePromotionStore = create<PromotionState>()((set, get) => ({
         set(state => ({
           promotions: state.promotions.map(promo =>
             promo._id === promotionId ? 
-              { ...promo, unites: [...(promo.unites || []), response.data] } : 
+              { ...promo, unites: [...response.data] } : 
               promo
           )
         }))
+
+        window.location.reload()
       } else {
         set({ error: response.message })
       }
@@ -161,6 +163,8 @@ export const usePromotionStore = create<PromotionState>()((set, get) => ({
               promo
           )
         }))
+
+        window.location.reload()
       } else {
         set({ error: response.message })
       }
@@ -186,6 +190,8 @@ export const usePromotionStore = create<PromotionState>()((set, get) => ({
               promo
           )
         }))
+
+        window.location.reload()
       } else {
         set({ error: response.message })
       }

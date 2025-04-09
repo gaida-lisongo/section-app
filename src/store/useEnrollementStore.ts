@@ -10,13 +10,44 @@ interface Enrollement {
   _id: string;
   date_created: string;
   date_fin: string;
-  promotionId: Promotion;
+  promotionId: {
+    _id: string;
+    sectionId: string;
+    niveau: string;
+    mention: string;
+    orientation: string;
+    unites: Array<{
+      code: string;
+      designation: string;
+      categorie: string;
+      matieres: any[];
+      _id: string;
+    }>;
+  };
   designation: string;
   montant: number;
   description?: string;
-  cours: string[];
+  cours: Array<{
+    _id: string;
+    designation: string;
+    code: string;
+    credit: number;
+    semestre: string;
+    codeUnite: string;
+    charges_horaires: any[];
+    createdAt: string;
+    updatedAt: string;
+  }>;
   createdAt: string;
   updatedAt: string;
+}
+
+interface UpdateEnrollementData {
+  date_fin?: string;
+  designation?: string;
+  montant?: number;
+  description?: string;
+  cours?: string[]; // Array of course IDs
 }
 
 interface EnrollementState {
@@ -35,7 +66,7 @@ interface EnrollementState {
     description?: string;
     date_fin: string;
   }) => Promise<void>;
-  updateEnrollement: (id: string, data: Partial<Enrollement>) => Promise<void>;
+  updateEnrollement: (id: string, data: UpdateEnrollementData) => Promise<void>;
   deleteEnrollement: (id: string) => Promise<void>;
   setCoursEnrollement: (enrollementId: string, action: 'add' | 'remove', coursId: string) => Promise<void>;
 }
@@ -52,6 +83,7 @@ export const useEnrollementStore = create<EnrollementState>((set, get) => ({
 
   fetchEnrollements: async (promotionId) => {
     set({ loading: true, error: null });
+    console.log("Fetching enrollements for promotion:", promotionId);
     try {
       const response = await enrollementService.getAllEnrollements(promotionId);
       if (response.success) {
@@ -93,12 +125,21 @@ export const useEnrollementStore = create<EnrollementState>((set, get) => ({
   updateEnrollement: async (id, data) => {
     set({ loading: true, error: null });
     try {
-      const response = await enrollementService.setEnrollement(id, data);
+      // If cours array is present in data, ensure we're only sending course IDs
+      const updateData = {
+        ...data,
+        cours: data.cours 
+          ? data.cours 
+          : undefined
+      };
+
+      const response = await enrollementService.setEnrollement(id, updateData);
       if (response.success) {
-        const { selectedPromotionId } = get();
-        if (selectedPromotionId) {
-          await get().fetchEnrollements(selectedPromotionId);
-        }
+        set(state => ({
+          enrollements: state.enrollements.map(enrollement => 
+            enrollement._id === id ? response.data : enrollement
+          )
+        }));
         toast.success("Enrollement mis à jour avec succès");
       } else {
         throw new Error(response.message || "Erreur lors de la mise à jour de l'enrollement");
@@ -137,14 +178,25 @@ export const useEnrollementStore = create<EnrollementState>((set, get) => ({
     set({ loading: true, error: null });
     try {
       const response = await enrollementService.setCoursEnrollement(enrollementId, {
-        action: [action],
+        action: 'add',
         cours: coursId
       });
+      
       if (response.success) {
-        const { selectedPromotionId } = get();
-        if (selectedPromotionId) {
-          await get().fetchEnrollements(selectedPromotionId);
-        }
+        // Update the local state directly with the response data
+        set(state => ({
+          enrollements: state.enrollements.map(enrollement => 
+            enrollement._id === enrollementId 
+              ? {
+                  ...enrollement,
+                  cours: action === 'add'
+                    ? [...enrollement.cours, response.data.cours]
+                    : enrollement.cours.filter(c => c._id !== coursId)
+                }
+              : enrollement
+          )
+        }));
+        
         toast.success(`Cours ${action === 'add' ? 'ajouté' : 'retiré'} avec succès`);
       } else {
         throw new Error(response.message || "Erreur lors de la modification des cours");

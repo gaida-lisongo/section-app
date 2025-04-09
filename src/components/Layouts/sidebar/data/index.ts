@@ -89,21 +89,21 @@ export const NAV_DATA: NavSection[] = [
       }
     ]
   },
-  {
-    label: "APPARITORAT",
-    items: [
-      {
-        title: 'Inscriptions',
-        icon: faClipboardList,
-        items: [],
-        url: '/etudiants/inscriptions'
-      },
-      {
-        title: 'Promotion des étudiants',
-        icon: faUserGraduate,
-        items: [],
-        url: '/etudiants/promotion'
-      }
-    ]
-  }
+  // {
+  //   label: "APPARITORAT",
+  //   items: [
+  //     {
+  //       title: 'Inscriptions',
+  //       icon: faClipboardList,
+  //       items: [],
+  //       url: '/etudiants/inscriptions'
+  //     },
+  //     {
+  //       title: 'Promotion des étudiants',
+  //       icon: faUserGraduate,
+  //       items: [],
+  //       url: '/etudiants/promotion'
+  //     }
+  //   ]
+  // }
 ];

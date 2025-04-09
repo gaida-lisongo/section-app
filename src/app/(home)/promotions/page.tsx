@@ -36,8 +36,12 @@ export default function PromotionsPage() {
   }, [activeSection, fetchPromotions]);
 
   useEffect(() => {
+    console.log("Promotions:", promotions);
+
     const filtered = promotions.filter(p =>
-      p.description.toLowerCase().includes(search.toLowerCase())
+      p.mention.toLowerCase().includes(search.toLowerCase()) ||
+      p.niveau.toLowerCase().includes(search.toLowerCase()) ||
+      p.orientation.toLowerCase().includes(search.toLowerCase()) 
     );
     setFilteredPromotions(filtered);
     setCurrentPage(1);

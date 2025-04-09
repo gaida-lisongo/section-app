@@ -61,13 +61,38 @@ export default function UEDetailPage() {
         return;
       }
 
+      setLoading(true);
       try {
         const response = await sectionService.getDescripteurByUnite(uniteId);
+        
         if (response.success) {
-          setDescripteur(response.data);
+          // Si un descripteur existe, on l'utilise
+          if (response.data) {
+            setDescripteur(response.data);
+          } else {
+            // Si aucun descripteur n'existe, on en crée un nouveau
+            const newDescripteur = {
+              objectifs: [],
+              contenu: [],
+              competences: [],
+              approchePed: [],
+              evaluation: []
+            };
+            
+            const createResponse = await sectionService.createdescripteur(uniteId, newDescripteur);
+            
+            if (createResponse.success) {
+              setDescripteur(createResponse.data);
+              toast.success('Nouveau descripteur créé avec succès');
+            } else {
+              throw new Error('Erreur lors de la création du descripteur');
+            }
+          }
+        } else {
+          throw new Error(response.message || 'Erreur lors du chargement du descripteur');
         }
       } catch (error) {
-        console.error('Error fetching descripteur:', error);
+        console.error('Error:', error);
         toast.error("Erreur lors du chargement du descripteur");
       } finally {
         setLoading(false);
@@ -81,17 +106,23 @@ export default function UEDetailPage() {
     if (!newItems[field].trim() || !uniteId) return;
     
     try {
-      // Créer une copie du descripteur avec le nouvel élément
-      const updatedDescripteur = {
-        ...descripteur,
-        [field]: [...descripteur[field], newItems[field].trim()]
+      // S'assurer que le descripteur existe
+      const currentDescripteur = descripteur || {
+        objectifs: [],
+        contenu: [],
+        competences: [],
+        approchePed: [],
+        evaluation: []
       };
 
-      // Mettre à jour en base de données
+      const updatedDescripteur = {
+        ...currentDescripteur,
+        [field]: [...(currentDescripteur[field] || []), newItems[field].trim()]
+      };
+
       const response = await sectionService.updatedescripteur(uniteId, updatedDescripteur);
       
       if (response.success) {
-        // Mettre à jour le state local uniquement si la persistance a réussi
         setDescripteur(updatedDescripteur);
         setNewItems(prev => ({ ...prev, [field]: '' }));
         toast.success('Élément ajouté avec succès');
@@ -158,7 +189,7 @@ export default function UEDetailPage() {
       </div>
 
       <ul className="space-y-2">
-        {descripteur[field].map((item, index) => (
+        {descripteur && descripteur[field].map((item, index) => (
           <li 
             key={index}
             className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm"
@@ -172,7 +203,7 @@ export default function UEDetailPage() {
             </button>
           </li>
         ))}
-        {descripteur[field].length === 0 && (
+        {descripteur && descripteur[field].length === 0 && (
           <li className="text-center py-8 text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
             Aucun élément dans cette section
           </li>

@@ -115,7 +115,6 @@ export default function SigninWithPassword() {
         // Sauvegarder le token dans le cookie
         Cookies.set('auth-token', response.data.token, {
           expires: 1, // expire dans 1 jour
-          secure: process.env.NODE_ENV === 'production',
           sameSite: 'strict'
         });
         
@@ -126,8 +125,6 @@ export default function SigninWithPassword() {
           token: response.data.token
         });
         
-        // Redirection vers la page d'accueil
-        router.push('/');
       } else {
         setError("Code OTP invalide");
       }

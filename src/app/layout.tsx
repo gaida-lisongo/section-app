@@ -24,7 +24,6 @@ export default function RootLayout({ children }: PropsWithChildren) {
       <body>
         <Providers>
           <NextTopLoader color="#5750F1" showSpinner={false} />
-
           {children}
         </Providers>
       </body>

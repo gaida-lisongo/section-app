@@ -1,59 +1,57 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { compactFormat } from "@/lib/format-number";
-import { OverviewCard } from "./card";
 import * as icons from "./icons";
 import { usePromotionStore } from "@/store/usePromotionStore";
 import { useSectionStore } from "@/store/useSectionStore";
-import type { Promotion, Unite } from "@/types/promotion";
+import { OverviewCard } from "./card";
 
-interface Metrics {
-  promotions: number;
-  unites: number;
-  matieres: number;
-}
-
-export function OverviewCards() {
-  const [metrics, setMetrics] = useState<Metrics>({
-    promotions: 0,
-    unites: 0,
-    matieres: 0,
+export function OverviewCardsGroup() {
+  const activeSection = useSectionStore((state) => {
+    const sections = state.sections;
+    const activeSectionId = state.activeSectionId;
+    return sections.find(s => s._id === activeSectionId);
+  });
+  
+  const { promotions, fetchPromotions } = usePromotionStore();
+  const [metrics, setMetrics] = useState({
+    totalPromotions: 0,
+    activePromotions: 0,
+    totalUnites: 0,
+    totalMatieres: 0,
   });
 
-  const promotions = usePromotionStore((state) => state.promotions);
+  useEffect(() => {
+    if (activeSection?._id) {
+      fetchPromotions(activeSection._id);
+    }
+  }, [activeSection]);
 
   useEffect(() => {
-    if (!promotions.length) return;
+    const calculateMetrics = () => {
+      const activePromotions = promotions.filter(p => p.statut === 'ACTIF').length;
+      const totalUnites = promotions.reduce((acc, p) => acc + (p.unites?.length || 0), 0);
+      const totalMatieres = promotions.reduce((acc, p) => {
+        return acc + (p.unites ?? []).reduce((sum, u) => sum + (u.matieres?.length || 0), 0);
+      }, 0);
 
-    // Calcul du nombre total d'unités avec null check
-    const totalUnites = promotions.reduce(
-      (acc, promotion) => acc + (promotion.unites?.length || 0),
-      0
-    );
+      setMetrics({
+        totalPromotions: promotions.length,
+        activePromotions,
+        totalUnites,
+        totalMatieres,
+      });
+    };
 
-    // Calcul du nombre total de matières avec null checks à chaque niveau
-    const totalMatieres = promotions.reduce((acc, promotion) => {
-      const uniteMatieres =
-        promotion.unites?.reduce((sum, unite) => {
-          const matieresCount = unite.matieres?.length || 0;
-          return sum + matieresCount;
-        }, 0) || 0;
-      return acc + uniteMatieres;
-    }, 0);
-
-    setMetrics({
-      promotions: promotions.length,
-      unites: totalUnites,
-      matieres: totalMatieres,
-    });
+    calculateMetrics();
   }, [promotions]);
-
+  console.log("Metrics: ", metrics);
   return (
     <div className="grid gap-4 sm:grid-cols-2 sm:gap-6 xl:grid-cols-4 2xl:gap-7.5">
       <OverviewCard
         label="Total Promotions"
         data={{
-          value: compactFormat(metrics.promotions),
+          value: compactFormat(metrics.totalPromotions),
           growthRate: 0,
           trending: "up",
         }}
@@ -61,9 +59,19 @@ export function OverviewCards() {
       />
 
       <OverviewCard
+        label="Promotions Actives"
+        data={{
+          value: compactFormat(metrics.activePromotions),
+          growthRate: (metrics.activePromotions / metrics.totalPromotions) * 100,
+          trending: "up",
+        }}
+        Icon={icons.Users}
+      />
+
+      <OverviewCard
         label="Total Unités"
         data={{
-          value: compactFormat(metrics.unites),
+          value: compactFormat(metrics.totalUnites),
           growthRate: 0,
           trending: "up",
         }}
@@ -73,8 +81,8 @@ export function OverviewCards() {
       <OverviewCard
         label="Total Matières"
         data={{
-          value: compactFormat(metrics.matieres),
-          growthRate: (metrics.matieres / metrics.unites) || 0,
+          value: compactFormat(metrics.totalMatieres),
+          growthRate: (metrics.totalMatieres / metrics.totalUnites) || 0,
           trending: "up",
         }}
         Icon={icons.Profit}

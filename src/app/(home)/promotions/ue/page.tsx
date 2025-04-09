@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { usePromotionStore } from '@/store/usePromotionStore';
 import { useSectionStore } from '@/store/useSectionStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faBookOpen } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faBookOpen, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { UEDataTable } from '@/components/Tables/ue/data-table';
 import { UEModal } from '@/components/Modals/ue-modal';
 import { toast } from 'react-hot-toast';
@@ -146,6 +146,75 @@ export default function UEPage() {
   const currentItems = filteredUnites.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredUnites.length / itemsPerPage);
 
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const Pagination = () => {
+    return (
+      <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
+        <div className="flex flex-1 justify-between sm:hidden">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+          >
+            Précédent
+          </button>
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+          >
+            Suivant
+          </button>
+        </div>
+        <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm text-gray-700">
+              Affichage de <span className="font-medium">{indexOfFirstItem + 1}</span> à{' '}
+              <span className="font-medium">
+                {Math.min(indexOfLastItem, filteredUnites.length)}
+              </span>{' '}
+              sur <span className="font-medium">{filteredUnites.length}</span> unités
+            </p>
+          </div>
+          <div>
+            <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50"
+              >
+                <FontAwesomeIcon icon={faChevronLeft} className="h-5 w-5" />
+              </button>
+              {[...Array(totalPages)].map((_, index) => (
+                <button
+                  key={index + 1}
+                  onClick={() => handlePageChange(index + 1)}
+                  className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold ${
+                    currentPage === index + 1
+                      ? 'z-10 bg-primary text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
+                      : 'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0'
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              ))}
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50"
+              >
+                <FontAwesomeIcon icon={faChevronRight} className="h-5 w-5" />
+              </button>
+            </nav>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8">
       <div className="space-y-8 max-w-7xl mx-auto">
@@ -237,6 +306,9 @@ export default function UEPage() {
                 onEdit={handleEdit}
                 onDelete={handleDelete}
               />
+
+              {/* Ajout du composant de pagination */}
+              {!loadingPromotions && filteredUnites.length > 0 && <Pagination />}
             </div>
           </div>
         </div>

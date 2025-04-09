@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBook, faSearch, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import sectionService from '@/api/sectionService';
 import { toast } from 'react-hot-toast';
+import enrollementService from '@/api/enrollementService';
+import type { GetMatieresByPromotionResponse } from '@/types/responses';
 
 interface Cours {
   _id: string;
@@ -30,16 +32,29 @@ export default function CoursModal({ isOpen, onClose, enrollement, onSave }: Cou
 
   const fetchCours = useCallback(async () => {
     try {
-      const response = await sectionService.getMatieresByUnite(enrollement.promotionId);
-      if (response.success) {
-        setCours(response.data);
+      const response = await enrollementService.getMatieresByPromotion(enrollement.promotionId._id) as GetMatieresByPromotionResponse;
+      
+      if (response.success && response.data.success) {
+        const allMatieres = response.data.data.unites.flatMap(unite => {
+          const firstSemMatieres = unite.semestres.Premier || [];
+          const secondSemMatieres = unite.semestres.Second || [];
+          return [...firstSemMatieres, ...secondSemMatieres].map(matiere => ({
+            _id: matiere._id,
+            designation: matiere.designation,
+            unite: {
+              _id: unite.code,
+              designation: unite.designation
+            }
+          }));
+        });
+        setCours(allMatieres);
       }
     } catch (error) {
       toast.error("Erreur lors du chargement des cours");
     } finally {
       setLoading(false);
     }
-  }, [enrollement.promotionId]);
+  }, [enrollement.promotionId._id]);
 
   useEffect(() => {
     if (isOpen) {

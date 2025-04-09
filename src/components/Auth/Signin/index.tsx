@@ -8,6 +8,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { useRouter } from 'next/navigation';
 import { useSectionStore } from '@/store/useSectionStore';
 import Cookies from 'js-cookie';
+import { set } from "date-fns";
 
 interface Section {
   _id: string;
@@ -37,7 +38,7 @@ export default function SigninWithPassword() {
   const [error, setError] = useState("");
   const [allSections, setAllSections] = useState([]);
   const router = useRouter();
-  const {setSections, sections} = useSectionStore();
+  const {setSections, sections, setActiveSection} = useSectionStore();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setData({
@@ -55,7 +56,14 @@ export default function SigninWithPassword() {
       const response = await authService.login({ matricule: data.matricule });
       console.log(response);
       if (response.success) {
-        
+
+        allSections.forEach((section: Section) => {
+          section.bureaux.forEach((bureau) => {
+            if (bureau.agentId === response.data.agentId) {
+              setActiveSection(section._id);
+            }
+          })
+        })
         setData(prev => ({
           ...prev,
           agentId: response.data.agentId
@@ -116,6 +124,7 @@ export default function SigninWithPassword() {
       console.log(response);
       if (response.success) {
         setAllSections(response.data);
+        setSections(response.data);
       }
     }
 

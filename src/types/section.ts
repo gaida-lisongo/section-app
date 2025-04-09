@@ -6,20 +6,16 @@ export interface Bureau {
 export interface Section {
   _id: string;
   titre: string;
-  designation: string;  // Ajout de la propriété manquante
-  nom: string;
-  description?: string;
-  code: string;
-  email?: string;
+  description: string;
+  designation?: string;
+  email: string;
+  url: string;
   telephone?: string;
-  url?: string;
-  image?: string;
-  chef?: string;
-  adjoint?: string;
-  statut: 'ACTIF' | 'INACTIF';
-  bureaux: Bureau[];
-  jurys?: string[];
-  offres?: string[];
+  bureaux: Array<{
+    grade: string;
+    agentId: string;
+    _id: string;
+  }>;
 }
 
 export interface SectionsResponse {
