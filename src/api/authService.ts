@@ -1,21 +1,31 @@
-import api from "@/api/config";
+import api from "./config";
+
+interface LoginCredentials {
+  email?: string;
+  password?: string;
+  matricule?: string;
+}
+
+
+interface LoginResponse {
+    success: boolean;
+    message?: string;
+    data: {
+        agent: any;
+        token: string;
+        agentId: string;
+    };
+}
+
 class AuthService {
-    async login({
-        matricule
-    }:{
-        matricule: string
-    }) {
-        console.log("login", matricule);
+    async login(credentials: LoginCredentials): Promise<LoginResponse> {
         const response = await fetch(`${api.API}agents/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-                matricule
-            }),
+            body: JSON.stringify(credentials),
         });
-        console.log(response);
         return response.json();
     }
 
@@ -58,4 +68,5 @@ class AuthService {
     }
 }
 
-export default new AuthService();
+const authService = new AuthService();
+export default authService;

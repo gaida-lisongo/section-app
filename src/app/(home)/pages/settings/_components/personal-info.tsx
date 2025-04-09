@@ -182,14 +182,11 @@ export function PersonalInfoForm() {
         <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
           <InputGroup
             className="w-full sm:w-1/3"
-            type="date" // Changé en type date
+            type="date"
             name="dateNaissance"
             label="Date de naissance"
-            // Convertir le format français en format ISO pour l'input date
-            value={formData.dateNaissance ? 
-              parse(formData.dateNaissance, 'dd/MM/yyyy', new Date()).toISOString().split('T')[0] 
-              : ''
-            }
+            placeholder="Sélectionnez une date"
+            value={formData.dateNaissance || ''}
             handleChange={handleChange}
             icon={<FontAwesomeIcon icon={faCalendar} />}
             iconPosition="left"

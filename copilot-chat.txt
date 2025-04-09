@@ -1,0 +1,7 @@
+cette application va permettre au chef de departemet de l`INSTITUT NATIONAL DU baptiment et des travaux de ppouvoir gerer sa sectio 
+nous devons donc forker la tempate est tu pret a te lancer das l`aventure 
+voici la stak technologique donc j ai besoin pour un premier temps
+1 Zustand
+2 SokcetIO
+enuite nous allons commencer  forker la template
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>CONTEXT

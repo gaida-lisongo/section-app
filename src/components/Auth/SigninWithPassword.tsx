@@ -1,13 +1,41 @@
 "use client";
-import { PasswordIcon } from "@/assets/icons";
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import InputGroup from "../FormElements/InputGroup";
-import authService from "@/api/authService";
-import { useAuthStore } from '@/store/useAuthStore';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-hot-toast';
+import { useAuthStore } from '@/store/useAuthStore';
 import { useSectionStore } from '@/store/useSectionStore';
+import authService from '@/api/authService';
 import Cookies from 'js-cookie';
+import InputGroup from '../FormElements/InputGroup';
+
+interface Section {
+  _id: string;
+  titre: string;
+  description: string;
+  email: string;
+  url: string;
+  telephone?: string;
+  bureaux: Array<{
+    grade: string;
+    agentId: string;
+    _id: string;
+  }>;
+}
+
+interface LoginResponse {
+  success: boolean;
+  message?: string;
+  data: {
+    agent: any;
+    token: string;
+    agentId: string;
+  };
+}
+
+interface SectionsResponse {
+  success: boolean;
+  data: Section[];
+}
 
 interface Section {
   _id: string;
@@ -23,6 +51,7 @@ interface Section {
 }
 
 export default function SigninWithPassword() {
+  const router = useRouter();
   const [step, setStep] = useState<'matricule' | 'otp'>('matricule');
   const [data, setData] = useState({
     matricule: "",
@@ -35,8 +64,7 @@ export default function SigninWithPassword() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [allSections, setAllSections] = useState([]);
-  const router = useRouter();
-  const setSections = useSectionStore((state) => state.setSections);
+  const {setSections, sections} = useSectionStore();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setData({
@@ -52,29 +80,15 @@ export default function SigninWithPassword() {
     
     try {
       const response = await authService.login({ matricule: data.matricule });
-      
+      console.log(response);
       if (response.success) {
-        // Vérifier si l'agent existe dans les bureaux des sections
-        const userSections = allSections.filter(section => 
-          section.bureaux.some(bureau => bureau.agentId === response.data.agentId)
-        );
-
-        if (userSections.length === 0) {
-          setError("Accès refusé. Cette plateforme est réservée aux membres du bureau des sections.");
-          return;
-        }
-
-        // Stocker les sections de l'utilisateur dans le store
-        setSections(userSections);
         
-        // Définir la première section comme active
-        useSectionStore.getState().setActiveSection(userSections[0]._id);
-
         setData(prev => ({
           ...prev,
           agentId: response.data.agentId
         }));
         setStep('otp');
+
       } else {
         setError("Matricule invalide");
       }
@@ -85,17 +99,18 @@ export default function SigninWithPassword() {
     }
   };
 
+  
   const handleSubmitOTP = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-
+    
     try {
       const response = await authService.verifyOtp({
         id: data.agentId,
         otp: data.otp
       });
-
+      console.log("Statut response : ", response.success);
       if (response.success) {
         // Sauvegarder le token dans le cookie
         Cookies.set('auth-token', response.data.token, {
@@ -103,7 +118,8 @@ export default function SigninWithPassword() {
           secure: process.env.NODE_ENV === 'production',
           sameSite: 'strict'
         });
-
+        
+      console.log(response.data.agent);
         // Stocker les données de l'utilisateur dans le store
         login({
           agent: response.data.agent,
@@ -137,6 +153,7 @@ export default function SigninWithPassword() {
       setAllSections([]);
     }
   }, []);
+
   return (
     <div>
       {error && (

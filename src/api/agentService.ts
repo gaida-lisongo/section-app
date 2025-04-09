@@ -65,6 +65,16 @@ class AgentService {
         return response.json();
     }
 
+    async getAllAgents() {
+        const response = await fetch(`${api.API}agents`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        return response.json();
+    }
+
     async getAllAnnees() {
         const response = await fetch(`${api.API}annees`, {
             method: "GET",
@@ -96,6 +106,49 @@ class AgentService {
         });
         return response.json();
     }
+
+    async deleteAnnee(id: string) {
+        const response = await fetch(`${api.API}annees/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        return response.json();
+    }
+
+    async createAgent(data: any) {
+        const response = await fetch(`${api.API}agents/create`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+        return response.json();
+    }
+
+    async updateAgent(id: string, data: any) {
+        const response = await fetch(`${api.API}agents/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+        return response.json();
+    }
+
+    async deleteAgent(id: string) {
+        const response = await fetch(`${api.API}agents/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        return response.json();
+    }
 }
 
-export default new AgentService();
+const agentService = new AgentService();
+export default agentService;

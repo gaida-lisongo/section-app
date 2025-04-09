@@ -5,27 +5,27 @@ import { useSectionStore } from './useSectionStore'
 import agentService from '@/api/agentService'
 
 interface Agent {
-  id: string
-  nom: string
-  prenom: string
-  postnom: string
-  email: string
-  matricule: string
-  telephone: string
-  typeAgent: string
-  avatar: string
-  dateNaissance: string | null
-  lieuNaissance: string | null
-  nationalite: string | null
+  id: string;
+  nom: string;
+  prenom: string;
+  postnom: string;
+  email: string;
+  matricule: string;
+  telephone: string;
+  typeAgent: string;
+  avatar: string | null; // Permettre null pour l'avatar
+  dateNaissance: string | null;
+  lieuNaissance: string | null;
+  nationalite: string | null;
 }
 
 interface AuthState {
-  agent: Agent | null
-  token: string | null
-  isAuthenticated: boolean
-  login: (data: { agent: Agent; token: string }) => void
-  logout: () => void
-  updateUserInfo: (updatedInfo: Partial<Agent>) => Promise<void>
+  agent: Agent | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  login: (data: { agent: Agent; token: string }) => void;
+  logout: () => void;
+  updateUserInfo: (updatedInfo: Partial<Agent>) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -54,14 +54,13 @@ export const useAuthStore = create<AuthState>()(
         isAuthenticated: false 
       }),
       updateUserInfo: async (updatedInfo) => {
-        console.log("Mise à jour des informations de l'utilisateur", updatedInfo);
         try {
           const currentAgent = get().agent;
           if (!currentAgent) throw new Error("Aucun utilisateur connecté");
 
           const response = await agentService.changeUserInfo({
             id: currentAgent.id,
-            data: {...updatedInfo}
+            data: updatedInfo
           });
 
           if (response.success) {
@@ -82,7 +81,7 @@ export const useAuthStore = create<AuthState>()(
       }
     }),
     {
-      name: 'auth-storage',
+      name: 'auth-storage'
     }
   )
 )

@@ -9,6 +9,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Dialog } from '@headlessui/react'
 import { toast } from "react-hot-toast";
+import { Section, Bureau } from '@/types/section';
+
+// Définir l'interface pour le state data
+interface ProfileData {
+  coverPhoto: string;
+  profilePhoto?: string;  // Ajout de la propriété profilePhoto comme optionnelle
+}
 
 interface Agent {
   id: string;
@@ -37,10 +44,10 @@ export default function Page() {
   const activeSection = useSectionStore((state) => {
     const sections = state.sections;
     const activeSectionId = state.activeSectionId;
-    return sections.find(s => s._id === activeSectionId);
+    return sections.find(s => s._id === activeSectionId) as Section | undefined;
   });
 
-  const [data, setData] = useState({
+  const [data, setData] = useState<ProfileData>({
     coverPhoto: "/images/banner/admin-inbtp.jpeg",
   });
   
@@ -104,20 +111,18 @@ export default function Page() {
     fetchAcademicYears();
   }, []);
 
-  const handleChange = (e: any) => {
-    if (e.target.name === "profilePhoto" ) {
-      const file = e.target?.files[0];
-
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.name === "profilePhoto" && e.target.files?.[0]) {
+      const file = e.target.files[0];
       setData({
         ...data,
-        profilePhoto: file && URL.createObjectURL(file),
+        profilePhoto: URL.createObjectURL(file),
       });
-    } else if (e.target.name === "coverPhoto") {
-      const file = e.target?.files[0];
-
+    } else if (e.target.name === "coverPhoto" && e.target.files?.[0]) {
+      const file = e.target.files[0];
       setData({
         ...data,
-        coverPhoto: file && URL.createObjectURL(file),
+        coverPhoto: URL.createObjectURL(file),
       });
     } else {
       setData({

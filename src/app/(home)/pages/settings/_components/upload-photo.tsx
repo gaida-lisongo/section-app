@@ -43,10 +43,10 @@ export function UploadPhotoForm() {
     }
   };
 
-  const handleDelete = async () => {
+  const handleRemovePhoto = async () => {
     try {
       await updateUserInfo({
-        avatar: null
+        avatar: null // Maintenant c'est valide
       });
       toast.success("Photo de profil supprimée");
     } catch (error) {
@@ -75,7 +75,7 @@ export function UploadPhotoForm() {
               <button 
                 type="button" 
                 className="text-body-sm hover:text-red"
-                onClick={handleDelete}
+                onClick={handleRemovePhoto}
               >
                 Supprimer
               </button>

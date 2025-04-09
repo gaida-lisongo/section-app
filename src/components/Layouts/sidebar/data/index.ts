@@ -1,105 +1,109 @@
-import * as Icons from "../icons";
+import { 
+  faHome, 
+  faGraduationCap, 
+  faUserTie,
+  faClipboardList,
+  faUsers,
+  faClock,
+  faCalendarAlt,
+  faBookOpen,
+  faUserGraduate,
+  faFileAlt,
+  faChalkboardTeacher,
+  faTrophy,
+  faPencilAlt,
+  faCode,
+  faUserPlus,
+  faListAlt
+} from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 
-export const NAV_DATA = [
+interface NavItem {
+  title: string;
+  url?: string;
+  icon?: IconDefinition;
+  items?: NavItem[]; 
+}
+
+interface NavSection {
+  label?: string;
+  icon?: IconDefinition;
+  items: NavItem[];
+}
+
+export const NAV_DATA: NavSection[] = [
   {
-    label: "MAIN MENU",
+    icon: faHome,
     items: [
       {
         title: "Dashboard",
-        icon: Icons.HomeIcon,
-        items: [
-          {
-            title: "eCommerce",
-            url: "/",
-          },
-        ],
-      },
-      {
-        title: "Calendar",
-        url: "/calendar",
-        icon: Icons.Calendar,
+        url: "/",
         items: [],
-      },
-      {
-        title: "Profile",
-        url: "/profile",
-        icon: Icons.User,
-        items: [],
-      },
-      {
-        title: "Forms",
-        icon: Icons.Alphabet,
-        items: [
-          {
-            title: "Form Elements",
-            url: "/forms/form-elements",
-          },
-          {
-            title: "Form Layout",
-            url: "/forms/form-layout",
-          },
-        ],
-      },
-      {
-        title: "Tables",
-        url: "/tables",
-        icon: Icons.Table,
-        items: [
-          {
-            title: "Tables",
-            url: "/tables",
-          },
-        ],
-      },
-      {
-        title: "Pages",
-        icon: Icons.Alphabet,
-        items: [
-          {
-            title: "Settings",
-            url: "/pages/settings",
-          },
-        ],
-      },
-    ],
+        icon: faHome,
+      }
+    ]
   },
   {
-    label: "OTHERS",
+    label: "ENSEIGNEMENT",
     items: [
       {
-        title: "Charts",
-        icon: Icons.PieChart,
+        title: 'Promotions',
+        icon: faGraduationCap,
         items: [
           {
-            title: "Basic Chart",
-            url: "/charts/basic-chart",
+            title: 'Promotion',
+            url: '/promotions'
           },
-        ],
+          {
+            title: 'Unité d\'Enseignement',
+            url: '/promotions/ue'
+          },
+          {
+            title: 'Matières',
+            url: '/promotions/matieres'
+          }
+        ]
       },
       {
-        title: "UI Elements",
-        icon: Icons.FourCircle,
-        items: [
-          {
-            title: "Alerts",
-            url: "/ui-elements/alerts",
-          },
-          {
-            title: "Buttons",
-            url: "/ui-elements/buttons",
-          },
-        ],
-      },
-      {
-        title: "Authentication",
-        icon: Icons.Authentication,
-        items: [
-          {
-            title: "Sign In",
-            url: "/auth/sign-in",
-          },
-        ],
-      },
-    ],
+        title: 'Titulaires',
+        icon: faChalkboardTeacher,
+        url: '/enseignants',
+        items: []
+      }
+    ]
   },
+  {
+    label: "RESULATATS",
+    items: [
+      {
+        title: 'Jurys',
+        icon: faTrophy,
+        url: '/jurys',
+        items: []
+      },
+      {
+        title: 'Enrolement',
+        icon: faUserPlus,
+        items: [],
+        url: '/enrollements'
+      }
+    ]
+  },
+  {
+    label: "APPARITORAT",
+    items: [
+      {
+        title: 'Inscriptions',
+        icon: faClipboardList,
+        items: [],
+        url: '/etudiants/inscriptions'
+      },
+      {
+        title: 'Promotion des étudiants',
+        icon: faUserGraduate,
+        items: [],
+        url: '/etudiants/promotion'
+      }
+    ]
+  }
 ];
