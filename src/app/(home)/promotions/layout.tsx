@@ -21,7 +21,7 @@ export default function PromotionsLayout({
         <div className="max-w-full overflow-x-auto">
           <div className="mt-4">
             <h1 className="text-2xl font-semibold text-dark dark:text-white">
-              {activeSection?.nom}
+              {activeSection?.titre}
             </h1>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
               Gérez les promotions, les unités d'enseignement et les matières de votre section

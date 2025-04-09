@@ -245,28 +245,6 @@ export default function Page() {
               {activeSection?.titre || "Aucune section sélectionnée"}
             </h3>
             <p className="font-medium text-gray-500">{activeSection?.email}</p>
-
-            <div className="mx-auto mb-5.5 mt-5 grid max-w-[370px] grid-cols-3 rounded-[5px] border border-stroke py-[9px] shadow-1 dark:border-dark-3 dark:bg-dark-2 dark:shadow-card">
-              <div className="flex flex-col items-center justify-center gap-1 border-r border-stroke px-4 dark:border-dark-3 xsm:flex-row">
-                <span className="font-medium text-dark dark:text-white">
-                  {activeSection?.bureaux?.length || 0}
-                </span>
-                <span className="text-body-sm">Membres</span>
-              </div>
-              <div className="flex flex-col items-center justify-center gap-1 border-r border-stroke px-4 dark:border-dark-3 xsm:flex-row">
-                <span className="font-medium text-dark dark:text-white">
-                  {activeSection?.jurys?.length || 0}
-                </span>
-                <span className="text-body-sm">Jurys</span>
-              </div>
-              <div className="flex flex-col items-center justify-center gap-1 px-4 xsm:flex-row">
-                <span className="font-medium text-dark dark:text-white">
-                  {activeSection?.offres?.length || 0}
-                </span>
-                <span className="text-body-sm">Offres</span>
-              </div>
-            </div>
-
             <div className="mx-auto max-w-[720px]">
               <h4 className="font-medium text-dark dark:text-white">
                 Description

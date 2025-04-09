@@ -101,7 +101,10 @@ export default function EnrollementsPage() {
               {filteredEnrollements.map(enrollement => (
                 <EnrollementCard
                   key={enrollement._id}
-                  enrollement={enrollement}
+                  enrollement={{
+                    ...enrollement,
+                    cours: enrollement.cours.map(cours => cours._id)
+                  }}
                   onManageCours={() => router.push(`/enrollements/${enrollement._id}`)}
                   onEdit={() => {/* logique de modification */}}
                 />
