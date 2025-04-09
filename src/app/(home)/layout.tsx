@@ -1,8 +1,21 @@
 import {Sidebar} from "@/components/Layouts/sidebar";
 import { ReactNode } from 'react';
 import { Header } from "@/components/Layouts/header";
+import type { Metadata } from "next";
 
-
+export const metadata: Metadata = {
+  title: {
+    template: "%s | INBT Section Manager",
+    default: "INBT Section Manager",
+  },
+  description:
+    "Application de gestion des sections pour l'Institut National du Bâtiment et des Travaux Publics",
+  icons: {
+    icon: "/public/favicon.ico",
+    shortcut: "/public/favicon.ico",
+    apple: "/public/apple-touch-icon.png",
+  },
+};
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
 

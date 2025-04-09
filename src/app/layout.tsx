@@ -16,11 +16,16 @@ export const metadata: Metadata = {
   },
   description:
     "Application de gestion des sections pour l'Institut National du Bâtiment et des Travaux Publics",
+  icons: {
+    icon: "/public/favicon.ico",
+    shortcut: "/public/favicon.ico",
+    apple: "/public/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="fr" suppressHydrationWarning>
       <body>
         <Providers>
           <NextTopLoader color="#5750F1" showSpinner={false} />
