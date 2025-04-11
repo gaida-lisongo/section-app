@@ -107,7 +107,7 @@ export default function SigninWithPassword() {
         });
         
         // Redirection vers la page d'accueil
-        router.push('/');
+        window.location.href = '/';
       } else {
         setError("Code OTP invalide");
       }
