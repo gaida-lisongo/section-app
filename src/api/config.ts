@@ -1,5 +1,5 @@
-const API_BASE_URL = "https://outer-elonore-teth-app-back-ffa7f892.koyeb.app/api/" // "http://localhost:8080/api/"
-const SOCKET_URL = "https://outer-elonore-teth-app-back-ffa7f892.koyeb.app"
+const API_BASE_URL = "https://inbtp-server.onrender.com/api/" // "http://localhost:8080/api/"
+const SOCKET_URL = "https://inbtp-server.onrender.com/api/"
 
 const CLOUDINARY_ENDPOINTS = {
     CLOUDINARY_CLOUD_NAME: "dujxkvyf8",
